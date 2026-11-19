@@ -2,13 +2,14 @@
 #   docker build -f infra/docker/python-service.Dockerfile --build-arg SERVICE=network .
 FROM python:3.12-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 UV_SYSTEM_PYTHON=1
-RUN pip install --no-cache-dir uv==0.5.11 && useradd --create-home --uid 10001 app
+RUN pip install --no-cache-dir uv==0.11.32 && useradd --create-home --uid 10001 app
 WORKDIR /srv
 
 ARG SERVICE
 COPY libs/py-common /srv/libs/py-common
 COPY services/${SERVICE} /srv/services/${SERVICE}
-RUN uv pip install --no-cache /srv/libs/py-common /srv/services/${SERVICE}
+# --no-sources: inside the image there is no uv workspace; the shared lib is installed from its path
+RUN uv pip install --no-cache --no-sources /srv/libs/py-common /srv/services/${SERVICE}
 
 ENV SERVICE=${SERVICE}
 USER app

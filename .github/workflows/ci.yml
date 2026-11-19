@@ -8,8 +8,8 @@ jobs:
   services:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
         with: { enable-cache: true }
       - run: uv sync
       - run: uv run ruff check .
@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: apps/customer } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm, cache-dependency-path: apps/customer/package-lock.json }
       - run: npm ci
       - run: npm run build
@@ -33,9 +33,9 @@ jobs:
     needs: [services, customer-app]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v5
         with: { node-version: 22 }
       - run: uv sync && (cd apps/customer && npm ci)
       - run: uv run python tools/e2e/qr_interop.py
@@ -47,5 +47,5 @@ jobs:
       matrix:
         service: [network, tracking, eta, realtime, identity, trips, notifications, ticketing, billing]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: docker build -f infra/docker/python-service.Dockerfile --build-arg SERVICE=${{ matrix.service }} -t metrorail/${{ matrix.service }}:ci .
