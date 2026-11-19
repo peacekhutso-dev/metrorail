@@ -1,0 +1,742 @@
+{
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ProductOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price_cents": {
+            "title": "Price Cents",
+            "type": "integer"
+          },
+          "trips": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trips"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "price_cents",
+          "trips"
+        ],
+        "title": "ProductOut",
+        "type": "object"
+      },
+      "PurchaseIn": {
+        "properties": {
+          "device_public_key": {
+            "description": "P-256 SPKI DER, base64url \u2014 from the phone keystore",
+            "title": "Device Public Key",
+            "type": "string"
+          },
+          "from_station_id": {
+            "title": "From Station Id",
+            "type": "string"
+          },
+          "product_id": {
+            "title": "Product Id",
+            "type": "string"
+          },
+          "to_station_id": {
+            "title": "To Station Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id",
+          "from_station_id",
+          "to_station_id",
+          "device_public_key"
+        ],
+        "title": "PurchaseIn",
+        "type": "object"
+      },
+      "PurchaseOut": {
+        "properties": {
+          "amount_cents": {
+            "title": "Amount Cents",
+            "type": "integer"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "ticket_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ticket Id"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "amount_cents",
+          "description",
+          "ticket_id"
+        ],
+        "title": "PurchaseOut",
+        "type": "object"
+      },
+      "TicketOut": {
+        "properties": {
+          "cert": {
+            "title": "Cert",
+            "type": "string"
+          },
+          "from_station_id": {
+            "title": "From Station Id",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "product_id": {
+            "title": "Product Id",
+            "type": "string"
+          },
+          "product_name": {
+            "title": "Product Name",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "to_station_id": {
+            "title": "To Station Id",
+            "type": "string"
+          },
+          "trip_in_progress": {
+            "title": "Trip In Progress",
+            "type": "boolean"
+          },
+          "trip_valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trip Valid Until"
+          },
+          "trips_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trips Left"
+          },
+          "trips_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trips Total"
+          },
+          "trips_used": {
+            "title": "Trips Used",
+            "type": "integer"
+          },
+          "valid_to": {
+            "format": "date-time",
+            "title": "Valid To",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "product_id",
+          "product_name",
+          "from_station_id",
+          "to_station_id",
+          "trips_total",
+          "trips_used",
+          "trips_left",
+          "trip_in_progress",
+          "trip_valid_until",
+          "valid_to",
+          "status",
+          "cert"
+        ],
+        "title": "TicketOut",
+        "type": "object"
+      },
+      "TopUpIn": {
+        "properties": {
+          "trips": {
+            "title": "Trips",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "trips"
+        ],
+        "title": "TopUpIn",
+        "type": "object"
+      },
+      "ValidateIn": {
+        "properties": {
+          "line_id": {
+            "default": "LN-SOUTHERN",
+            "title": "Line Id",
+            "type": "string"
+          },
+          "qr": {
+            "title": "Qr",
+            "type": "string"
+          },
+          "scanner_id": {
+            "pattern": "^SC-\\d{6}$",
+            "title": "Scanner Id",
+            "type": "string"
+          },
+          "train_no": {
+            "title": "Train No",
+            "type": "string"
+          }
+        },
+        "required": [
+          "qr",
+          "train_no",
+          "scanner_id"
+        ],
+        "title": "ValidateIn",
+        "type": "object"
+      },
+      "ValidateOut": {
+        "properties": {
+          "new_trip_started": {
+            "default": false,
+            "title": "New Trip Started",
+            "type": "boolean"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "result": {
+            "title": "Result",
+            "type": "string"
+          },
+          "route": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Route"
+          },
+          "ticket_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ticket Id"
+          },
+          "trip_no": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trip No"
+          },
+          "trips_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trips Left"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "ValidateOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "MetroRail ticketing service",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/keys": {
+      "get": {
+        "description": "Public keys for scanners and apps: verify certificates, seal QR codes.",
+        "operationId": "public_keys_keys_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Public Keys",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/products": {
+      "get": {
+        "operationId": "products_products_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductOut"
+                  },
+                  "title": "Response Products Products Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Products",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/purchases": {
+      "post": {
+        "operationId": "create_purchase_purchases_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Purchase",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/purchases/{purchase_id}": {
+      "get": {
+        "operationId": "get_purchase_purchases__purchase_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "purchase_id",
+            "required": true,
+            "schema": {
+              "title": "Purchase Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Purchase",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "ops"
+        ]
+      }
+    },
+    "/tickets": {
+      "get": {
+        "operationId": "my_tickets_tickets_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TicketOut"
+                  },
+                  "title": "Response My Tickets Tickets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "My Tickets",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/tickets/{ticket_id}": {
+      "get": {
+        "operationId": "one_ticket_tickets__ticket_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ticket_id",
+            "required": true,
+            "schema": {
+              "title": "Ticket Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "One Ticket",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/tickets/{ticket_id}/topup": {
+      "post": {
+        "operationId": "top_up_tickets__ticket_id__topup_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ticket_id",
+            "required": true,
+            "schema": {
+              "title": "Ticket Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopUpIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Top Up",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    },
+    "/validations": {
+      "post": {
+        "description": "Online validation. The scanner app runs the same checks offline and syncs every 60 s.",
+        "operationId": "validate_validations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Validate",
+        "tags": [
+          "ticketing"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "via the gateway",
+      "url": "/api/ticketing"
+    }
+  ]
+}

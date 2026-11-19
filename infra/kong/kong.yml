@@ -1,0 +1,31 @@
+# Kong (DB-less). The app only ever talks to http://localhost:8080/api/<service>/...
+_format_version: "3.0"
+_transform: true
+
+services:
+  - { name: network,       url: http://network:8000,       routes: [{ name: network,       paths: [/api/network] }] }
+  - { name: tracking,      url: http://tracking:8000,      routes: [{ name: tracking,      paths: [/api/tracking] }] }
+  - { name: eta,           url: http://eta:8000,           routes: [{ name: eta,           paths: [/api/eta] }] }
+  - { name: realtime,      url: http://realtime:8000,      routes: [{ name: realtime,      paths: [/api/realtime] }] }
+  - { name: identity,      url: http://identity:8000,      routes: [{ name: identity,      paths: [/api/identity] }] }
+  - { name: trips,         url: http://trips:8000,         routes: [{ name: trips,         paths: [/api/trips] }] }
+  - { name: notifications, url: http://notifications:8000, routes: [{ name: notifications, paths: [/api/notifications] }] }
+  - { name: ticketing,     url: http://ticketing:8000,     routes: [{ name: ticketing,     paths: [/api/ticketing] }] }
+  - { name: billing,       url: http://billing:8000,       routes: [{ name: billing,       paths: [/api/billing] }] }
+
+plugins:
+  - name: cors
+    config:
+      origins: ["http://localhost:5173", "capacitor://localhost", "http://localhost"]
+      methods: [GET, POST, PUT, DELETE, OPTIONS]
+      headers: [Authorization, Content-Type, X-Request-Id]
+      credentials: true
+  - name: rate-limiting
+    config: { minute: 600, policy: local }
+  - name: correlation-id
+    config: { header_name: X-Request-Id, generator: uuid, echo_downstream: true }
+
+  # Stricter limits on login codes (SMS costs money).
+  - name: rate-limiting
+    route: identity
+    config: { minute: 30, policy: local }

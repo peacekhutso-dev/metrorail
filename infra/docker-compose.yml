@@ -1,0 +1,161 @@
+# MetroRail local stack:  make up   (or: docker compose -f infra/docker-compose.yml --env-file infra/.env up --build)
+# App/API entry: http://localhost:8080/api/<service>/...   Live updates (SSE): http://localhost:8001
+name: metrorail
+
+x-service: &service
+  build: { context: .., dockerfile: infra/docker/python-service.Dockerfile }
+  restart: unless-stopped
+  depends_on:
+    postgres: { condition: service_healthy }
+    nats: { condition: service_started }
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment: { POSTGRES_USER: metrorail, POSTGRES_PASSWORD: metrorail }
+    volumes: [pgdata:/var/lib/postgresql/data, ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro]
+    ports: ["5432:5432"]
+    healthcheck: { test: [CMD, pg_isready, -U, metrorail], interval: 5s, retries: 10 }
+
+  nats:
+    image: nats:2.10-alpine
+    command: ["-js", "-m", "8222"]
+    ports: ["4222:4222", "8222:8222"]
+
+  centrifugo:
+    image: centrifugo/centrifugo:v5.4
+    command: centrifugo --config=/centrifugo/config.json
+    volumes: [./centrifugo/config.json:/centrifugo/config.json:ro]
+    ports: ["8001:8000"]
+
+  kong:
+    image: kong:3.8
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/kong.yml
+      KONG_PROXY_LISTEN: 0.0.0.0:8080
+      KONG_ADMIN_LISTEN: 0.0.0.0:8081
+    volumes: [./kong/kong.yml:/kong/kong.yml:ro]
+    ports: ["8080:8080", "8081:8081"]
+    depends_on: [network, tracking, eta, realtime, identity, trips, notifications, ticketing, billing]
+
+  network:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: network } }
+    environment:
+      SERVICE_NAME: network
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/network
+
+  tracking:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: tracking } }
+    environment:
+      SERVICE_NAME: tracking
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/tracking
+
+  eta:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: eta } }
+    environment:
+      SERVICE_NAME: eta
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+
+  realtime:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: realtime } }
+    environment:
+      SERVICE_NAME: realtime
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      CENTRIFUGO_API_URL: http://centrifugo:8000
+      CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY:-dev-api-key}
+      CENTRIFUGO_TOKEN_SECRET: ${CENTRIFUGO_TOKEN_SECRET:-dev-token-secret-change-me-32-bytes!!}
+      CENTRIFUGO_PUBLIC_URL: http://localhost:8001
+
+  identity:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: identity } }
+    environment:
+      SERVICE_NAME: identity
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/identity
+      SIGNING_KEY: ${IDENTITY_SIGNING_KEY:-}
+
+  trips:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: trips } }
+    environment:
+      SERVICE_NAME: trips
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/trips
+
+  notifications:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: notifications } }
+    environment:
+      SERVICE_NAME: notifications
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/notifications
+
+  ticketing:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: ticketing } }
+    environment:
+      SERVICE_NAME: ticketing
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/ticketing
+      ISSUER_KEY: ${TICKETING_ISSUER_KEY:-}
+      SCANNER_KEY: ${TICKETING_SCANNER_KEY:-}
+
+  billing:
+    <<: *service
+    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: billing } }
+    environment:
+      SERVICE_NAME: billing
+      ENVIRONMENT: local
+      EVENT_BUS: nats
+      NATS_URL: nats://nats:4222
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DEMO_TIME: ${DEMO_TIME:-}
+      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/billing
+      PAYAT_MODE: ${PAYAT_MODE:-mock}
+      PAYAT_BASE_URL: ${PAYAT_BASE_URL:-}
+      PAYAT_MERCHANT_ID: ${PAYAT_MERCHANT_ID:-}
+      PAYAT_API_KEY: ${PAYAT_API_KEY:-}
+      PAYAT_WEBHOOK_SECRET: ${PAYAT_WEBHOOK_SECRET:-mock-secret}
+
+volumes:
+  pgdata:

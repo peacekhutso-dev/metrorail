@@ -1,0 +1,84 @@
+asyncapi: 3.0.0
+info:
+  title: MetroRail domain events
+  version: 0.1.0
+  description: |
+    Events between services over NATS JetStream. Subject = <domain>.<entity>.<event>.
+    Consumers must be idempotent (events can be redelivered).
+defaultContentType: application/json
+
+channels:
+  trackingTrainPosition:
+    address: tracking.train.position
+    messages: { position: { $ref: "#/components/messages/TrainLive" } }
+  trackingTrainStateChanged:
+    address: tracking.train.state_changed
+    description: moving | at_station | held (3+ min, 2+ between stations) | stopped (5+ min) | disruption (15+ min)
+    messages: { state: { $ref: "#/components/messages/TrainLive" } }
+  trackingReportCreated:
+    address: tracking.report.created
+    messages: { report: { payload: { type: object, properties: { train_no: { type: string }, station_id: { type: string }, kind: { type: string, enum: [arrived, delayed, crowded, not_running] } } } } }
+  identityUserCreated:
+    address: identity.user.created
+    messages: { user: { payload: { type: object, properties: { user_id: { type: string } } } } }
+  identityUserDeleted:
+    address: identity.user.deleted
+    description: POPIA erasure — every service purges this user's personal data.
+    messages: { user: { payload: { type: object, properties: { user_id: { type: string } } } } }
+  tripsTripSaved:
+    address: trips.trip.saved
+    messages: { trip: { $ref: "#/components/messages/Trip" } }
+  tripsTripDeleted:
+    address: trips.trip.deleted
+    messages: { trip: { payload: { type: object, properties: { id: { type: string }, user_id: { type: string } } } } }
+  notificationsAlertCreated:
+    address: notifications.alert.created
+    messages: { alert: { payload: { type: object, properties: { user_id: { type: string }, id: { type: string }, kind: { type: string }, title: { type: string }, body: { type: string }, train_no: { type: string } } } } }
+  ticketingPurchaseCreated:
+    address: ticketing.purchase.created
+    description: Billing takes the amount from here — the app never sends prices.
+    messages: { purchase: { payload: { type: object, properties: { purchase_id: { type: string }, user_id: { type: string }, amount_cents: { type: integer }, description: { type: string } } } } }
+  ticketingTicketIssued:
+    address: ticketing.ticket.issued
+    messages: { ticket: { payload: { type: object, properties: { ticket_id: { type: string }, user_id: { type: string }, purchase_id: { type: string } } } } }
+  ticketingTripStarted:
+    address: ticketing.trip.started
+    messages: { trip: { payload: { type: object, properties: { ticket_id: { type: string }, train_no: { type: string }, trip_no: { type: integer } } } } }
+  billingPaymentSucceeded:
+    address: billing.payment.succeeded
+    messages: { payment: { payload: { type: object, properties: { payment_id: { type: string }, purchase_id: { type: string }, user_id: { type: string }, amount_cents: { type: integer } } } } }
+  billingPaymentFailed:
+    address: billing.payment.failed
+    messages: { payment: { payload: { type: object, properties: { payment_id: { type: string }, purchase_id: { type: string }, reason: { type: string } } } } }
+
+components:
+  messages:
+    TrainLive:
+      payload:
+        type: object
+        properties:
+          train_no: { type: string, example: "3412" }
+          lat: { type: number }
+          lng: { type: number }
+          state: { type: string, enum: [moving, at_station, held, stopped, disruption] }
+          stationary_s: { type: integer }
+          last_station_id: { type: string, example: ST-MOWBRAY }
+          next_station_id: { type: string, example: ST-ROSEBANK }
+          at_station_id: { type: string, nullable: true }
+          delay_min: { type: integer }
+          seen_at: { type: string, format: date-time }
+          source: { type: string, enum: [gps, staff_scan, crowd, simulator] }
+          previous_state: { type: string, nullable: true }
+    Trip:
+      payload:
+        type: object
+        properties:
+          id: { type: string }
+          user_id: { type: string }
+          name: { type: string }
+          from_station_id: { type: string }
+          to_station_id: { type: string }
+          days: { type: array, items: { type: string } }
+          usual_time: { type: string, example: "07:18" }
+          train_no: { type: string, nullable: true }
+          alert_delays: { type: boolean }

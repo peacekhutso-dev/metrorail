@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+# Node
+node_modules/
+dist/
+# Local data & secrets
+.dev-data/
+*.db
+.env
+infra/.env
+*.pem
+# Capacitor native builds (regenerate with npx cap add android)
+apps/customer/android/app/build/
+apps/customer/ios/App/Pods/
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

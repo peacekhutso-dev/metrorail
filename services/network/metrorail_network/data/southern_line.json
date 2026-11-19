@@ -1,0 +1,346 @@
+{
+ "stations": [
+  {
+   "id": "ST-CAPE-TOWN",
+   "name": "Cape Town",
+   "lat": -33.9227,
+   "lng": 18.4256
+  },
+  {
+   "id": "ST-WOODSTOCK",
+   "name": "Woodstock",
+   "lat": -33.9267,
+   "lng": 18.4447
+  },
+  {
+   "id": "ST-SALT-RIVER",
+   "name": "Salt River",
+   "lat": -33.9284,
+   "lng": 18.4628
+  },
+  {
+   "id": "ST-OBSERVATORY",
+   "name": "Observatory",
+   "lat": -33.9379,
+   "lng": 18.4695
+  },
+  {
+   "id": "ST-MOWBRAY",
+   "name": "Mowbray",
+   "lat": -33.9466,
+   "lng": 18.474
+  },
+  {
+   "id": "ST-ROSEBANK",
+   "name": "Rosebank",
+   "lat": -33.9543,
+   "lng": 18.4734
+  },
+  {
+   "id": "ST-RONDEBOSCH",
+   "name": "Rondebosch",
+   "lat": -33.9612,
+   "lng": 18.4705
+  },
+  {
+   "id": "ST-NEWLANDS",
+   "name": "Newlands",
+   "lat": -33.9711,
+   "lng": 18.4664
+  },
+  {
+   "id": "ST-CLAREMONT",
+   "name": "Claremont",
+   "lat": -33.9806,
+   "lng": 18.4651
+  },
+  {
+   "id": "ST-HARFIELD-ROAD",
+   "name": "Harfield Road",
+   "lat": -33.9874,
+   "lng": 18.4669
+  },
+  {
+   "id": "ST-KENILWORTH",
+   "name": "Kenilworth",
+   "lat": -33.9958,
+   "lng": 18.4699
+  },
+  {
+   "id": "ST-WYNBERG",
+   "name": "Wynberg",
+   "lat": -34.004,
+   "lng": 18.4698
+  },
+  {
+   "id": "ST-WITTEBOME",
+   "name": "Wittebome",
+   "lat": -34.0118,
+   "lng": 18.4706
+  },
+  {
+   "id": "ST-PLUMSTEAD",
+   "name": "Plumstead",
+   "lat": -34.0215,
+   "lng": 18.4728
+  },
+  {
+   "id": "ST-STEURHOF",
+   "name": "Steurhof",
+   "lat": -34.029,
+   "lng": 18.474
+  },
+  {
+   "id": "ST-DIEP-RIVER",
+   "name": "Diep River",
+   "lat": -34.037,
+   "lng": 18.472
+  },
+  {
+   "id": "ST-HEATHFIELD",
+   "name": "Heathfield",
+   "lat": -34.045,
+   "lng": 18.47
+  },
+  {
+   "id": "ST-RETREAT",
+   "name": "Retreat",
+   "lat": -34.056,
+   "lng": 18.476
+  },
+  {
+   "id": "ST-STEENBERG",
+   "name": "Steenberg",
+   "lat": -34.068,
+   "lng": 18.474
+  },
+  {
+   "id": "ST-LAKESIDE",
+   "name": "Lakeside",
+   "lat": -34.085,
+   "lng": 18.456
+  },
+  {
+   "id": "ST-FALSE-BAY",
+   "name": "False Bay",
+   "lat": -34.093,
+   "lng": 18.463
+  },
+  {
+   "id": "ST-MUIZENBERG",
+   "name": "Muizenberg",
+   "lat": -34.108,
+   "lng": 18.47
+  },
+  {
+   "id": "ST-ST-JAMES",
+   "name": "St James",
+   "lat": -34.119,
+   "lng": 18.459
+  },
+  {
+   "id": "ST-KALK-BAY",
+   "name": "Kalk Bay",
+   "lat": -34.128,
+   "lng": 18.448
+  },
+  {
+   "id": "ST-FISH-HOEK",
+   "name": "Fish Hoek",
+   "lat": -34.137,
+   "lng": 18.431
+  },
+  {
+   "id": "ST-SUNNY-COVE",
+   "name": "Sunny Cove",
+   "lat": -34.146,
+   "lng": 18.44
+  },
+  {
+   "id": "ST-GLENCAIRN",
+   "name": "Glencairn",
+   "lat": -34.158,
+   "lng": 18.431
+  },
+  {
+   "id": "ST-SIMONS-TOWN",
+   "name": "Simon's Town",
+   "lat": -34.188,
+   "lng": 18.434
+  }
+ ],
+ "lines": [
+  {
+   "id": "LN-SOUTHERN",
+   "name": "Southern Line",
+   "colour": "#1A73B0",
+   "stops": [
+    {
+     "station_id": "ST-CAPE-TOWN",
+     "seq": 0,
+     "minutes_from_previous": 0
+    },
+    {
+     "station_id": "ST-WOODSTOCK",
+     "seq": 1,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-SALT-RIVER",
+     "seq": 2,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-OBSERVATORY",
+     "seq": 3,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-MOWBRAY",
+     "seq": 4,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-ROSEBANK",
+     "seq": 5,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-RONDEBOSCH",
+     "seq": 6,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-NEWLANDS",
+     "seq": 7,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-CLAREMONT",
+     "seq": 8,
+     "minutes_from_previous": 4
+    },
+    {
+     "station_id": "ST-HARFIELD-ROAD",
+     "seq": 9,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-KENILWORTH",
+     "seq": 10,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-WYNBERG",
+     "seq": 11,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-WITTEBOME",
+     "seq": 12,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-PLUMSTEAD",
+     "seq": 13,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-STEURHOF",
+     "seq": 14,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-DIEP-RIVER",
+     "seq": 15,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-HEATHFIELD",
+     "seq": 16,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-RETREAT",
+     "seq": 17,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-STEENBERG",
+     "seq": 18,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-LAKESIDE",
+     "seq": 19,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-FALSE-BAY",
+     "seq": 20,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-MUIZENBERG",
+     "seq": 21,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-ST-JAMES",
+     "seq": 22,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-KALK-BAY",
+     "seq": 23,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-FISH-HOEK",
+     "seq": 24,
+     "minutes_from_previous": 4
+    },
+    {
+     "station_id": "ST-SUNNY-COVE",
+     "seq": 25,
+     "minutes_from_previous": 2
+    },
+    {
+     "station_id": "ST-GLENCAIRN",
+     "seq": 26,
+     "minutes_from_previous": 3
+    },
+    {
+     "station_id": "ST-SIMONS-TOWN",
+     "seq": 27,
+     "minutes_from_previous": 5
+    }
+   ],
+   "platforms": {
+    "southbound": "2",
+    "northbound": "1"
+   }
+  }
+ ],
+ "timetable": {
+  "line_id": "LN-SOUTHERN",
+  "service_days": "Mon-Sun",
+  "southbound": {
+   "first": "05:01",
+   "last": "20:01",
+   "every_min": 20,
+   "number_start": 3400,
+   "number_step": 2,
+   "terminus": "Simon's Town"
+  },
+  "northbound": {
+   "first": "05:05",
+   "last": "20:05",
+   "every_min": 20,
+   "number_start": 3401,
+   "number_step": 2,
+   "terminus": "Cape Town"
+  }
+ },
+ "_note": "Sample timetable for the demo (train 3412 leaves Cape Town 07:01, reaches Rondebosch 07:18). Station order is real; coordinates approximate; times are NOT official PRASA data."
+}

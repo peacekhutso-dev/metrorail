@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  services:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with: { enable-cache: true }
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest -q
+      - name: Contracts are up to date
+        run: |
+          uv run python tools/contracts/export_openapi.py
+          git diff --exit-code contracts/openapi || (echo "Run 'make contracts' and commit" && exit 1)
+
+  customer-app:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/customer } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: apps/customer/package-lock.json }
+      - run: npm ci
+      - run: npm run build
+
+  qr-interop:
+    needs: [services, customer-app]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: uv sync && (cd apps/customer && npm ci)
+      - run: uv run python tools/e2e/qr_interop.py
+
+  images:
+    needs: services
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [network, tracking, eta, realtime, identity, trips, notifications, ticketing, billing]
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -f infra/docker/python-service.Dockerfile --build-arg SERVICE=${{ matrix.service }} -t metrorail/${{ matrix.service }}:ci .
