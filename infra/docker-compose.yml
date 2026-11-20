@@ -1,9 +1,8 @@
 # MetroRail local stack:  make up   (or: docker compose -f infra/docker-compose.yml --env-file infra/.env up --build)
-# App/API entry: http://localhost:8080/api/<service>/...   Live updates (SSE): http://localhost:8001
+# App/API entry: http://localhost:8080/api/<service>/...   API docs: /api/<service>/docs   Live updates (SSE): http://localhost:8001
 name: metrorail
 
 x-service: &service
-  build: { context: .., dockerfile: infra/docker/python-service.Dockerfile }
   restart: unless-stopped
   depends_on:
     postgres: { condition: service_healthy }
@@ -41,49 +40,50 @@ services:
 
   network:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: network } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Network } }
     environment:
       SERVICE_NAME: network
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/network
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/network
 
   tracking:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: tracking } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Tracking } }
     environment:
       SERVICE_NAME: tracking
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/tracking
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/tracking
 
   eta:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: eta } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Eta } }
     environment:
       SERVICE_NAME: eta
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      ETA_MODEL_PATH: ${ETA_MODEL_PATH:-}
 
   realtime:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: realtime } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Realtime } }
     environment:
       SERVICE_NAME: realtime
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
       CENTRIFUGO_API_URL: http://centrifugo:8000
       CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY:-dev-api-key}
       CENTRIFUGO_TOKEN_SECRET: ${CENTRIFUGO_TOKEN_SECRET:-dev-token-secret-change-me-32-bytes!!}
@@ -91,66 +91,65 @@ services:
 
   identity:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: identity } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Identity } }
     environment:
       SERVICE_NAME: identity
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/identity
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/identity
       SIGNING_KEY: ${IDENTITY_SIGNING_KEY:-}
 
   trips:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: trips } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Trips } }
     environment:
       SERVICE_NAME: trips
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/trips
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/trips
 
   notifications:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: notifications } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Notifications } }
     environment:
       SERVICE_NAME: notifications
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/notifications
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/notifications
 
   ticketing:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: ticketing } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Ticketing } }
     environment:
       SERVICE_NAME: ticketing
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/ticketing
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/ticketing
       ISSUER_KEY: ${TICKETING_ISSUER_KEY:-}
       SCANNER_KEY: ${TICKETING_SCANNER_KEY:-}
 
   billing:
     <<: *service
-    build: { context: .., dockerfile: infra/docker/python-service.Dockerfile, args: { SERVICE: billing } }
+    build: { context: .., dockerfile: infra/docker/service.Dockerfile, args: { SERVICE: Billing } }
     environment:
       SERVICE_NAME: billing
       ENVIRONMENT: local
       EVENT_BUS: nats
       NATS_URL: nats://nats:4222
-      JWKS_URL: http://identity:8000/.well-known/jwks.json
       DEMO_TIME: ${DEMO_TIME:-}
-      DATABASE_URL: postgresql+asyncpg://metrorail:metrorail@postgres:5432/billing
+      JWKS_URL: http://identity:8000/.well-known/jwks.json
+      DATABASE_URL: postgresql://metrorail:metrorail@postgres:5432/billing
       PAYAT_MODE: ${PAYAT_MODE:-mock}
       PAYAT_BASE_URL: ${PAYAT_BASE_URL:-}
       PAYAT_MERCHANT_ID: ${PAYAT_MERCHANT_ID:-}

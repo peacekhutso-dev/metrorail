@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Billing service: card payments through Pay@ (card only), 3-D Secure, saved card tokens, receipts. -->
+  <ItemGroup>
+    <ProjectReference Include="../../libs/MetroRail.Common/MetroRail.Common.csproj" />
+  </ItemGroup>
+</Project>

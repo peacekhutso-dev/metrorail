@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Tracking service: live train positions, moving/held/stopped detection, delays, crowd reports. -->
+  <ItemGroup>
+    <ProjectReference Include="../../libs/MetroRail.Common/MetroRail.Common.csproj" />
+  </ItemGroup>
+</Project>

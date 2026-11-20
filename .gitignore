@@ -1,24 +1,27 @@
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-.pytest_cache/
-.ruff_cache/
-*.egg-info/
+# .NET
+bin/
+obj/
+*.user
+TestResults/
 # Node
 node_modules/
 dist/
+# Python (offline ML training only)
+__pycache__/
+.venv/
 # Local data & secrets
 .dev-data/
 *.db
 .env
 infra/.env
 *.pem
-# Capacitor native builds (regenerate with npx cap add android)
+*.onnx
+# Capacitor native builds
 apps/customer/android/app/build/
 apps/customer/ios/App/Pods/
 # OS / editors
 .DS_Store
 .idea/
+.vs/
 .vscode/*
 !.vscode/extensions.json

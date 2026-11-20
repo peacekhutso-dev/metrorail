@@ -5,8 +5,8 @@
 **Context.** Two developers, MVP demo on 16 Dec 2026, but the system must scale to PRASA volumes
 (target 500k daily users, 100k live connections) and be maintainable by PRASA's engineers.
 
-**Decision.** One repository; each domain is its own FastAPI service with its own database and
-deployable image (`services/*`). Shared plumbing lives in `libs/py-common` so every service
+**Decision.** One repository; each domain is its own ASP.NET Core service with its own database and
+deployable image (`services/*`). Shared plumbing lives in `libs/MetroRail.Common` so every service
 looks the same. Services talk through REST (sync reads) and NATS events (everything else).
 Contracts are generated from code into `contracts/` and checked in CI.
 

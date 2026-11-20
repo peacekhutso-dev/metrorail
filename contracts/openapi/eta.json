@@ -1,82 +1,94 @@
 {
+  "openapi": "3.1.1",
+  "info": {
+    "title": "MetroRail.Tools | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/eta",
+      "description": "via the gateway"
+    }
+  ],
+  "paths": {
+    "/trains/{trainNo}/eta": {
+      "get": {
+        "tags": [
+          "eta"
+        ],
+        "parameters": [
+          {
+            "name": "trainNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainEtaOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains/{trainNo}/journey": {
+      "get": {
+        "tags": [
+          "eta"
+        ],
+        "parameters": [
+          {
+            "name": "trainNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "board",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "alight",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JourneyEtaOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
       "JourneyEtaOut": {
-        "description": "Everything the Home trip card needs, in one call.",
-        "properties": {
-          "alight_predicted": {
-            "title": "Alight Predicted",
-            "type": "string"
-          },
-          "alight_station": {
-            "title": "Alight Station",
-            "type": "string"
-          },
-          "board_in_min": {
-            "title": "Board In Min",
-            "type": "integer"
-          },
-          "board_predicted": {
-            "title": "Board Predicted",
-            "type": "string"
-          },
-          "board_scheduled": {
-            "title": "Board Scheduled",
-            "type": "string"
-          },
-          "board_station": {
-            "title": "Board Station",
-            "type": "string"
-          },
-          "likely_from": {
-            "title": "Likely From",
-            "type": "string"
-          },
-          "likely_to": {
-            "title": "Likely To",
-            "type": "string"
-          },
-          "ride_min": {
-            "title": "Ride Min",
-            "type": "integer"
-          },
-          "state": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "State"
-          },
-          "stationary_s": {
-            "title": "Stationary S",
-            "type": "integer"
-          },
-          "stops_until_board": {
-            "title": "Stops Until Board",
-            "type": "integer"
-          },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
-          }
-        },
         "required": [
           "train_no",
           "state",
@@ -92,44 +104,57 @@
           "likely_from",
           "likely_to"
         ],
-        "title": "JourneyEtaOut",
-        "type": "object"
-      },
-      "StopEtaOut": {
+        "type": "object",
         "properties": {
-          "delay_min": {
-            "title": "Delay Min",
-            "type": "integer"
+          "train_no": {
+            "type": "string"
+          },
+          "state": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "stationary_s": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "board_station": {
+            "type": "string"
+          },
+          "board_scheduled": {
+            "type": "string"
+          },
+          "board_predicted": {
+            "type": "string"
+          },
+          "board_in_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stops_until_board": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "alight_station": {
+            "type": "string"
+          },
+          "alight_predicted": {
+            "type": "string"
+          },
+          "ride_min": {
+            "type": "integer",
+            "format": "int32"
           },
           "likely_from": {
-            "title": "Likely From",
             "type": "string"
           },
           "likely_to": {
-            "title": "Likely To",
-            "type": "string"
-          },
-          "passed": {
-            "title": "Passed",
-            "type": "boolean"
-          },
-          "predicted": {
-            "title": "Predicted",
-            "type": "string"
-          },
-          "scheduled": {
-            "title": "Scheduled",
-            "type": "string"
-          },
-          "station_id": {
-            "title": "Station Id",
-            "type": "string"
-          },
-          "station_name": {
-            "title": "Station Name",
             "type": "string"
           }
-        },
+        }
+      },
+      "StopEtaOut": {
         "required": [
           "station_id",
           "station_name",
@@ -140,46 +165,36 @@
           "delay_min",
           "passed"
         ],
-        "title": "StopEtaOut",
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "station_id": {
+            "type": "string"
+          },
+          "station_name": {
+            "type": "string"
+          },
+          "scheduled": {
+            "type": "string"
+          },
+          "predicted": {
+            "type": "string"
+          },
+          "likely_from": {
+            "type": "string"
+          },
+          "likely_to": {
+            "type": "string"
+          },
+          "delay_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        }
       },
       "TrainEtaOut": {
-        "properties": {
-          "live": {
-            "title": "Live",
-            "type": "boolean"
-          },
-          "model": {
-            "title": "Model",
-            "type": "string"
-          },
-          "state": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "State"
-          },
-          "stationary_s": {
-            "title": "Stationary S",
-            "type": "integer"
-          },
-          "stops": {
-            "items": {
-              "$ref": "#/components/schemas/StopEtaOut"
-            },
-            "title": "Stops",
-            "type": "array"
-          },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
-          }
-        },
         "required": [
           "train_no",
           "state",
@@ -188,203 +203,40 @@
           "model",
           "stops"
         ],
-        "title": "TrainEtaOut",
-        "type": "object"
-      },
-      "ValidationError": {
+        "type": "object",
         "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
+          "train_no": {
+            "type": "string"
           },
-          "input": {
-            "title": "Input"
+          "state": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
-          "loc": {
+          "stationary_s": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "live": {
+            "type": "boolean"
+          },
+          "model": {
+            "type": "string"
+          },
+          "stops": {
+            "type": "array",
             "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
-            "type": "string"
-          },
-          "type": {
-            "title": "Error Type",
-            "type": "string"
+              "$ref": "#/components/schemas/StopEtaOut"
+            }
           }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
+        }
       }
     }
   },
-  "info": {
-    "title": "MetroRail eta service",
-    "version": "0.1.0"
-  },
-  "openapi": "3.1.0",
-  "paths": {
-    "/health": {
-      "get": {
-        "operationId": "health_health_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Health",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/ready": {
-      "get": {
-        "operationId": "ready_ready_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Ready",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/trains/{train_no}/eta": {
-      "get": {
-        "operationId": "train_eta_trains__train_no__eta_get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "train_no",
-            "required": true,
-            "schema": {
-              "title": "Train No",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TrainEtaOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Train Eta",
-        "tags": [
-          "eta"
-        ]
-      }
-    },
-    "/trains/{train_no}/journey": {
-      "get": {
-        "description": "e.g. /trains/3412/journey?board=ST-RONDEBOSCH&alight=ST-CLAREMONT",
-        "operationId": "journey_eta_trains__train_no__journey_get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "train_no",
-            "required": true,
-            "schema": {
-              "title": "Train No",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "board",
-            "required": true,
-            "schema": {
-              "title": "Board",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "alight",
-            "required": true,
-            "schema": {
-              "title": "Alight",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JourneyEtaOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Journey Eta",
-        "tags": [
-          "eta"
-        ]
-      }
-    }
-  },
-  "servers": [
+  "tags": [
     {
-      "description": "via the gateway",
-      "url": "/api/eta"
+      "name": "eta"
     }
   ]
 }
