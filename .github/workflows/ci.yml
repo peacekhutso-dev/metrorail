@@ -48,4 +48,4 @@ jobs:
         service: [Network, Tracking, Eta, Realtime, Identity, Trips, Notifications, Ticketing, Billing]
     steps:
       - uses: actions/checkout@v5
-      - run: docker build -f infra/docker/service.Dockerfile --build-arg SERVICE=${{ matrix.service }} -t metrorail/${{ matrix.service }}:ci .
+      - run: docker build -f infra/docker/service.Dockerfile --build-arg SERVICE=${{ matrix.service }} -t metrorail/service:${{ matrix.service }}-ci .
