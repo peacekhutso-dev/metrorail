@@ -1,41 +1,249 @@
 {
+  "openapi": "3.1.1",
+  "info": {
+    "title": "MetroRail.Tools | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/network",
+      "description": "via the gateway"
+    }
+  ],
+  "paths": {
+    "/stations": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StationOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stations/nearest": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lines": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LineOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lines/{lineId}/stops": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "lineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LineStopOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trips/{trainNo}": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "trainNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TripOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stations/{stationId}/departures": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "stationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DepartureOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journeys": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JourneyOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "DepartureOut": {
-        "properties": {
-          "direction": {
-            "title": "Direction",
-            "type": "string"
-          },
-          "in_min": {
-            "title": "In Min",
-            "type": "integer"
-          },
-          "line_id": {
-            "title": "Line Id",
-            "type": "string"
-          },
-          "platform": {
-            "title": "Platform",
-            "type": "string"
-          },
-          "scheduled": {
-            "title": "Scheduled",
-            "type": "string"
-          },
-          "scheduled_min": {
-            "title": "Scheduled Min",
-            "type": "integer"
-          },
-          "terminus": {
-            "title": "Terminus",
-            "type": "string"
-          },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
-          }
-        },
         "required": [
           "train_no",
           "line_id",
@@ -46,62 +254,37 @@
           "scheduled_min",
           "in_min"
         ],
-        "title": "DepartureOut",
-        "type": "object"
-      },
-      "HTTPValidationError": {
+        "type": "object",
         "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
-      "JourneyOption": {
-        "properties": {
-          "arrives": {
-            "title": "Arrives",
-            "type": "string"
-          },
-          "changes": {
-            "default": 0,
-            "title": "Changes",
-            "type": "integer"
-          },
-          "departs": {
-            "title": "Departs",
-            "type": "string"
-          },
-          "duration_min": {
-            "title": "Duration Min",
-            "type": "integer"
-          },
-          "from_station": {
-            "title": "From Station",
+          "train_no": {
             "type": "string"
           },
           "line_id": {
-            "title": "Line Id",
+            "type": "string"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "terminus": {
             "type": "string"
           },
           "platform": {
-            "title": "Platform",
             "type": "string"
           },
-          "to_station": {
-            "title": "To Station",
+          "scheduled": {
             "type": "string"
           },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
+          "scheduled_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "in_min": {
+            "type": "integer",
+            "format": "int32"
           }
-        },
+        }
+      },
+      "JourneyOption": {
         "required": [
           "train_no",
           "line_id",
@@ -112,154 +295,141 @@
           "duration_min",
           "platform"
         ],
-        "title": "JourneyOption",
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "train_no": {
+            "type": "string"
+          },
+          "line_id": {
+            "type": "string"
+          },
+          "from_station": {
+            "type": "string"
+          },
+          "to_station": {
+            "type": "string"
+          },
+          "departs": {
+            "type": "string"
+          },
+          "arrives": {
+            "type": "string"
+          },
+          "duration_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        }
       },
       "LineOut": {
-        "properties": {
-          "colour": {
-            "title": "Colour",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          }
-        },
         "required": [
           "id",
           "name",
           "colour"
         ],
-        "title": "LineOut",
-        "type": "object"
-      },
-      "LineStopOut": {
+        "type": "object",
         "properties": {
-          "minutes_from_origin": {
-            "title": "Minutes From Origin",
-            "type": "integer"
-          },
-          "seq": {
-            "title": "Seq",
-            "type": "integer"
-          },
-          "station_id": {
-            "title": "Station Id",
+          "id": {
             "type": "string"
           },
-          "station_name": {
-            "title": "Station Name",
+          "name": {
+            "type": "string"
+          },
+          "colour": {
             "type": "string"
           }
-        },
+        }
+      },
+      "LineStopOut": {
         "required": [
           "seq",
           "station_id",
           "station_name",
           "minutes_from_origin"
         ],
-        "title": "LineStopOut",
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "station_id": {
+            "type": "string"
+          },
+          "station_name": {
+            "type": "string"
+          },
+          "minutes_from_origin": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "StationOut": {
-        "properties": {
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "lat": {
-            "title": "Lat",
-            "type": "number"
-          },
-          "lines": {
-            "default": [],
-            "items": {
-              "type": "string"
-            },
-            "title": "Lines",
-            "type": "array"
-          },
-          "lng": {
-            "title": "Lng",
-            "type": "number"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          }
-        },
         "required": [
           "id",
           "name",
           "lat",
-          "lng"
+          "lng",
+          "lines"
         ],
-        "title": "StationOut",
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "StopTime": {
-        "properties": {
-          "scheduled": {
-            "title": "Scheduled",
-            "type": "string"
-          },
-          "seq": {
-            "title": "Seq",
-            "type": "integer"
-          },
-          "station_id": {
-            "title": "Station Id",
-            "type": "string"
-          },
-          "station_name": {
-            "title": "Station Name",
-            "type": "string"
-          }
-        },
         "required": [
           "seq",
           "station_id",
           "station_name",
           "scheduled"
         ],
-        "title": "StopTime",
-        "type": "object"
-      },
-      "TripOut": {
+        "type": "object",
         "properties": {
-          "direction": {
-            "title": "Direction",
+          "seq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "station_id": {
             "type": "string"
           },
-          "line_id": {
-            "title": "Line Id",
+          "station_name": {
             "type": "string"
           },
-          "platform": {
-            "title": "Platform",
-            "type": "string"
-          },
-          "stops": {
-            "items": {
-              "$ref": "#/components/schemas/StopTime"
-            },
-            "title": "Stops",
-            "type": "array"
-          },
-          "terminus": {
-            "title": "Terminus",
-            "type": "string"
-          },
-          "train_no": {
-            "title": "Train No",
+          "scheduled": {
             "type": "string"
           }
-        },
+        }
+      },
+      "TripOut": {
         "required": [
           "train_no",
           "line_id",
@@ -268,493 +438,36 @@
           "platform",
           "stops"
         ],
-        "title": "TripOut",
-        "type": "object"
-      },
-      "ValidationError": {
+        "type": "object",
         "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
+          "train_no": {
+            "type": "string"
           },
-          "input": {
-            "title": "Input"
+          "line_id": {
+            "type": "string"
           },
-          "loc": {
+          "direction": {
+            "type": "string"
+          },
+          "terminus": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "stops": {
+            "type": "array",
             "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
-            "type": "string"
-          },
-          "type": {
-            "title": "Error Type",
-            "type": "string"
+              "$ref": "#/components/schemas/StopTime"
+            }
           }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
+        }
       }
     }
   },
-  "info": {
-    "title": "MetroRail network service",
-    "version": "0.1.0"
-  },
-  "openapi": "3.1.0",
-  "paths": {
-    "/health": {
-      "get": {
-        "operationId": "health_health_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Health",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/journeys": {
-      "get": {
-        "description": "Direct journeys on one line. Journeys with changes (e.g. via Mutual) come with more lines.",
-        "operationId": "journeys_journeys_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "from",
-            "required": true,
-            "schema": {
-              "title": "From",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "to",
-            "required": true,
-            "schema": {
-              "title": "To",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "after",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "After"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 3,
-              "maximum": 10,
-              "title": "Limit",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/JourneyOption"
-                  },
-                  "title": "Response Journeys Journeys Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Journeys",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/lines": {
-      "get": {
-        "operationId": "list_lines_lines_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/LineOut"
-                  },
-                  "title": "Response List Lines Lines Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Lines",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/lines/{line_id}/stops": {
-      "get": {
-        "operationId": "line_stops_lines__line_id__stops_get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "line_id",
-            "required": true,
-            "schema": {
-              "title": "Line Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/LineStopOut"
-                  },
-                  "title": "Response Line Stops Lines  Line Id  Stops Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Line Stops",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/ready": {
-      "get": {
-        "operationId": "ready_ready_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Ready",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/stations": {
-      "get": {
-        "operationId": "list_stations_stations_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "q",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Q"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/StationOut"
-                  },
-                  "title": "Response List Stations Stations Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "List Stations",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/stations/nearest": {
-      "get": {
-        "operationId": "nearest_station_stations_nearest_get",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "lat",
-            "required": true,
-            "schema": {
-              "title": "Lat",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "lng",
-            "required": true,
-            "schema": {
-              "title": "Lng",
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StationOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Nearest Station",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/stations/{station_id}/departures": {
-      "get": {
-        "operationId": "departures_stations__station_id__departures_get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "station_id",
-            "required": true,
-            "schema": {
-              "title": "Station Id",
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "direction",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "pattern": "^(southbound|northbound)$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Direction"
-            }
-          },
-          {
-            "description": "HH:MM SAST, default now",
-            "in": "query",
-            "name": "after",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "HH:MM SAST, default now",
-              "title": "After"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 6,
-              "maximum": 50,
-              "title": "Limit",
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/DepartureOut"
-                  },
-                  "title": "Response Departures Stations  Station Id  Departures Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Departures",
-        "tags": [
-          "network"
-        ]
-      }
-    },
-    "/trips/{train_no}": {
-      "get": {
-        "description": "Timetabled stop times for one train. Tracking/ETA services use this as the baseline.",
-        "operationId": "get_trip_trips__train_no__get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "train_no",
-            "required": true,
-            "schema": {
-              "title": "Train No",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TripOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Get Trip",
-        "tags": [
-          "network"
-        ]
-      }
-    }
-  },
-  "servers": [
+  "tags": [
     {
-      "description": "via the gateway",
-      "url": "/api/network"
+      "name": "network"
     }
   ]
 }

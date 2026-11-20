@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Network service: stations, lines, timetables and departure boards. -->
+  <ItemGroup>
+    <ProjectReference Include="../../libs/MetroRail.Common/MetroRail.Common.csproj" />
+    <EmbeddedResource Include="Data/southern_line.json" LogicalName="southern_line.json" />
+  </ItemGroup>
+</Project>

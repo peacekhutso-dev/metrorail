@@ -7,6 +7,11 @@ insert_final_newline = true
 indent_style = space
 indent_size = 2
 
-[*.py]
+[*.cs]
 indent_size = 4
-max_line_length = 110
+max_line_length = 140
+csharp_style_namespace_declarations = file_scoped:suggestion
+dotnet_sort_system_directives_first = true
+
+[*.{csproj,props}]
+indent_size = 2

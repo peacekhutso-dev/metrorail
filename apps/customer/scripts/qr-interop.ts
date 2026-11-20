@@ -1,6 +1,6 @@
 /**
  * Proves the app's QR code is readable by the Python ticketing service.
- * Driven by tools/e2e/qr_interop.py:
+ * Driven by `dotnet run --project tools/MetroRail.Tools -- qr-interop`:
  *   tsx scripts/qr-interop.ts                         -> {dpk, pkcs8}   (new phone key)
  *   tsx scripts/qr-interop.ts <cert> <scannerPub> <pkcs8>  -> {qr}
  */

@@ -1,379 +1,40 @@
 {
-  "components": {
-    "schemas": {
-      "Consents": {
-        "properties": {
-          "nearest_station": {
-            "default": false,
-            "title": "Nearest Station",
-            "type": "boolean"
-          },
-          "trip_alerts": {
-            "default": true,
-            "title": "Trip Alerts",
-            "type": "boolean"
-          },
-          "usage_counts": {
-            "default": true,
-            "title": "Usage Counts",
-            "type": "boolean"
-          }
-        },
-        "title": "Consents",
-        "type": "object"
-      },
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
-      "MeOut": {
-        "properties": {
-          "consents": {
-            "$ref": "#/components/schemas/Consents"
-          },
-          "email": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Email"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "member_since": {
-            "title": "Member Since",
-            "type": "string"
-          },
-          "phone_masked": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Phone Masked"
-          },
-          "plan": {
-            "title": "Plan",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "phone_masked",
-          "email",
-          "plan",
-          "consents",
-          "member_since"
-        ],
-        "title": "MeOut",
-        "type": "object"
-      },
-      "RefreshIn": {
-        "properties": {
-          "refresh_token": {
-            "title": "Refresh Token",
-            "type": "string"
-          }
-        },
-        "required": [
-          "refresh_token"
-        ],
-        "title": "RefreshIn",
-        "type": "object"
-      },
-      "StartIn": {
-        "properties": {
-          "email": {
-            "anyOf": [
-              {
-                "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Email"
-          },
-          "phone": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Phone"
-          }
-        },
-        "title": "StartIn",
-        "type": "object"
-      },
-      "StartOut": {
-        "properties": {
-          "challenge_id": {
-            "title": "Challenge Id",
-            "type": "string"
-          },
-          "channel": {
-            "enum": [
-              "sms",
-              "email"
-            ],
-            "title": "Channel",
-            "type": "string"
-          },
-          "dev_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Dev Code"
-          },
-          "expires_in_s": {
-            "title": "Expires In S",
-            "type": "integer"
-          },
-          "sent_to": {
-            "title": "Sent To",
-            "type": "string"
-          }
-        },
-        "required": [
-          "challenge_id",
-          "channel",
-          "sent_to",
-          "expires_in_s"
-        ],
-        "title": "StartOut",
-        "type": "object"
-      },
-      "TokensOut": {
-        "properties": {
-          "access_token": {
-            "title": "Access Token",
-            "type": "string"
-          },
-          "expires_in_s": {
-            "default": 900,
-            "title": "Expires In S",
-            "type": "integer"
-          },
-          "is_new_user": {
-            "title": "Is New User",
-            "type": "boolean"
-          },
-          "refresh_token": {
-            "title": "Refresh Token",
-            "type": "string"
-          },
-          "token_type": {
-            "default": "Bearer",
-            "title": "Token Type",
-            "type": "string"
-          },
-          "user_id": {
-            "title": "User Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "access_token",
-          "refresh_token",
-          "user_id",
-          "is_new_user"
-        ],
-        "title": "TokensOut",
-        "type": "object"
-      },
-      "ValidationError": {
-        "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
-            "type": "string"
-          },
-          "type": {
-            "title": "Error Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
-      },
-      "VerifyIn": {
-        "properties": {
-          "challenge_id": {
-            "title": "Challenge Id",
-            "type": "string"
-          },
-          "code": {
-            "pattern": "^\\d{6}$",
-            "title": "Code",
-            "type": "string"
-          }
-        },
-        "required": [
-          "challenge_id",
-          "code"
-        ],
-        "title": "VerifyIn",
-        "type": "object"
-      }
-    }
-  },
+  "openapi": "3.1.1",
   "info": {
-    "title": "MetroRail identity service",
-    "version": "0.1.0"
+    "title": "MetroRail.Tools | v1",
+    "version": "1.0.0"
   },
-  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "/api/identity",
+      "description": "via the gateway"
+    }
+  ],
   "paths": {
     "/.well-known/jwks.json": {
       "get": {
-        "operationId": "jwks__well_known_jwks_json_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Jwks",
         "tags": [
-          "identity",
           "ops"
-        ]
-      }
-    },
-    "/auth/logout": {
-      "post": {
-        "operationId": "logout_auth_logout_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Logout",
-        "tags": [
-          "identity"
-        ]
-      }
-    },
-    "/auth/refresh": {
-      "post": {
-        "operationId": "refresh_auth_refresh_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshIn"
-              }
-            }
-          },
-          "required": true
-        },
+        ],
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TokensOut"
+                  "$ref": "#/components/schemas/AnonymousTypeOfDictionary\u00602[]"
                 }
               }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            }
           }
-        },
-        "summary": "Refresh",
-        "tags": [
-          "identity"
-        ]
+        }
       }
     },
     "/auth/start": {
       "post": {
-        "operationId": "start_auth_start_post",
+        "tags": [
+          "identity"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -386,35 +47,23 @@
         },
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/StartOut"
                 }
               }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            }
           }
-        },
-        "summary": "Start",
-        "tags": [
-          "identity"
-        ]
+        }
       }
     },
     "/auth/verify": {
       "post": {
-        "operationId": "verify_auth_verify_post",
+        "tags": [
+          "identity"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -427,88 +76,103 @@
         },
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokensOut"
                 }
               }
-            },
-            "description": "Successful Response"
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "identity"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshIn"
+              }
+            }
           },
-          "422": {
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/TokensOut"
                 }
               }
-            },
-            "description": "Validation Error"
+            }
           }
-        },
-        "summary": "Verify",
-        "tags": [
-          "identity"
-        ]
+        }
       }
     },
-    "/health": {
-      "get": {
-        "operationId": "health_health_get",
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "identity"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshIn"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
+            "description": "OK"
           }
-        },
-        "summary": "Health",
-        "tags": [
-          "ops"
-        ]
+        }
       }
     },
     "/me": {
-      "delete": {
-        "description": "POPIA s24: delete the account. Other services purge on identity.user.deleted.\nPayment records are kept only as long as tax law requires, without contact details.",
-        "operationId": "delete_me_me_delete",
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Delete Me",
+      "get": {
         "tags": [
           "identity"
-        ]
-      },
-      "get": {
-        "operationId": "me_me_get",
+        ],
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MeOut"
                 }
               }
-            },
-            "description": "Successful Response"
+            }
           }
-        },
-        "summary": "Me",
+        }
+      },
+      "delete": {
         "tags": [
           "identity"
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/me/consents": {
       "put": {
-        "operationId": "set_consents_me_consents_put",
+        "tags": [
+          "identity"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -521,76 +185,287 @@
         },
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MeOut"
                 }
               }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            }
           }
-        },
-        "summary": "Set Consents",
-        "tags": [
-          "identity"
-        ]
+        }
       }
     },
     "/me/export": {
       "get": {
-        "description": "POPIA s23: a copy of the personal information we hold. Other services add their part\n(trips, tickets, receipts) via the gateway's /api/me/export aggregation (TODO).",
-        "operationId": "export_my_data_me_export_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Export My Data",
         "tags": [
           "identity"
-        ]
-      }
-    },
-    "/ready": {
-      "get": {
-        "operationId": "ready_ready_get",
+        ],
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymousTypeOfAnonymousTypeOfstringAndstringAndstringAndstringAndConsentsAndDateTimeOffset"
+                }
               }
-            },
-            "description": "Successful Response"
+            }
           }
-        },
-        "summary": "Ready",
-        "tags": [
-          "ops"
-        ]
+        }
       }
     }
   },
-  "servers": [
+  "components": {
+    "schemas": {
+      "AnonymousTypeOfAnonymousTypeOfstringAndstringAndstringAndstringAndConsentsAndDateTimeOffset": {
+        "required": [
+          "account"
+        ],
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/AnonymousTypeOfstringAndstringAndstringAndstringAndConsentsAndDateTimeOffset"
+          }
+        }
+      },
+      "AnonymousTypeOfDictionary\u00602[]": {
+        "required": [
+          "keys"
+        ],
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "AnonymousTypeOfstringAndstringAndstringAndstringAndConsentsAndDateTimeOffset": {
+        "required": [
+          "id",
+          "phone",
+          "email",
+          "plan",
+          "consents",
+          "created_at"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "plan": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "consents": {
+            "$ref": "#/components/schemas/Consents"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Consents": {
+        "type": "object",
+        "properties": {
+          "trip_alerts": {
+            "type": "boolean",
+            "default": true
+          },
+          "nearest_station": {
+            "type": "boolean",
+            "default": false
+          },
+          "usage_counts": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "MeOut": {
+        "required": [
+          "id",
+          "phone_masked",
+          "email",
+          "plan",
+          "consents",
+          "member_since"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "phone_masked": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "plan": {
+            "type": "string"
+          },
+          "consents": {
+            "$ref": "#/components/schemas/Consents"
+          },
+          "member_since": {
+            "type": "string"
+          }
+        }
+      },
+      "RefreshIn": {
+        "required": [
+          "refresh_token"
+        ],
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string"
+          }
+        }
+      },
+      "StartIn": {
+        "required": [
+          "phone",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "StartOut": {
+        "required": [
+          "challenge_id",
+          "channel",
+          "sent_to",
+          "expires_in_s",
+          "dev_code"
+        ],
+        "type": "object",
+        "properties": {
+          "challenge_id": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "sent_to": {
+            "type": "string"
+          },
+          "expires_in_s": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dev_code": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "TokensOut": {
+        "required": [
+          "access_token",
+          "refresh_token",
+          "user_id",
+          "is_new_user"
+        ],
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "is_new_user": {
+            "type": "boolean"
+          },
+          "token_type": {
+            "type": "string",
+            "default": "Bearer"
+          },
+          "expires_in_s": {
+            "type": "integer",
+            "format": "int32",
+            "default": 900
+          }
+        }
+      },
+      "VerifyIn": {
+        "required": [
+          "challenge_id",
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "challenge_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
     {
-      "description": "via the gateway",
-      "url": "/api/identity"
+      "name": "ops"
+    },
+    {
+      "name": "identity"
     }
   ]
 }

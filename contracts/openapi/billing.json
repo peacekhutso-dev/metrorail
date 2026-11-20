@@ -1,349 +1,21 @@
 {
-  "components": {
-    "schemas": {
-      "CardIn": {
-        "description": "MOCK ONLY. With real Pay@ the hosted form collects the card; this endpoint is disabled.",
-        "properties": {
-          "cvv": {
-            "pattern": "^\\d{3,4}$",
-            "title": "Cvv",
-            "type": "string"
-          },
-          "expiry": {
-            "pattern": "^(0[1-9]|1[0-2])/\\d{2}$",
-            "title": "Expiry",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "number": {
-            "pattern": "^[\\d ]{15,23}$",
-            "title": "Number",
-            "type": "string"
-          },
-          "save": {
-            "default": false,
-            "title": "Save",
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "number",
-          "expiry",
-          "cvv",
-          "name"
-        ],
-        "title": "CardIn",
-        "type": "object"
-      },
-      "CardOut": {
-        "properties": {
-          "brand": {
-            "title": "Brand",
-            "type": "string"
-          },
-          "expiry": {
-            "title": "Expiry",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "last4": {
-            "title": "Last4",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "brand",
-          "last4",
-          "expiry"
-        ],
-        "title": "CardOut",
-        "type": "object"
-      },
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
-      "OtpIn": {
-        "properties": {
-          "otp": {
-            "pattern": "^\\d{6}$",
-            "title": "Otp",
-            "type": "string"
-          }
-        },
-        "required": [
-          "otp"
-        ],
-        "title": "OtpIn",
-        "type": "object"
-      },
-      "PayIn": {
-        "properties": {
-          "method": {
-            "enum": [
-              "new_card",
-              "saved_card"
-            ],
-            "title": "Method",
-            "type": "string"
-          },
-          "purchase_id": {
-            "title": "Purchase Id",
-            "type": "string"
-          },
-          "saved_card_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Saved Card Id"
-          }
-        },
-        "required": [
-          "purchase_id",
-          "method"
-        ],
-        "title": "PayIn",
-        "type": "object"
-      },
-      "PaymentOut": {
-        "properties": {
-          "amount_cents": {
-            "title": "Amount Cents",
-            "type": "integer"
-          },
-          "brand": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand"
-          },
-          "card_form_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Card Form Url"
-          },
-          "decline_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Decline Reason"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "last4": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last4"
-          },
-          "purchase_id": {
-            "title": "Purchase Id",
-            "type": "string"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "three_ds_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Three Ds Url"
-          }
-        },
-        "required": [
-          "id",
-          "purchase_id",
-          "status",
-          "amount_cents",
-          "description"
-        ],
-        "title": "PaymentOut",
-        "type": "object"
-      },
-      "ValidationError": {
-        "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
-            "type": "string"
-          },
-          "type": {
-            "title": "Error Type",
-            "type": "string"
-          }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
-      }
-    }
-  },
+  "openapi": "3.1.1",
   "info": {
-    "title": "MetroRail billing service",
-    "version": "0.1.0"
+    "title": "MetroRail.Tools | v1",
+    "version": "1.0.0"
   },
-  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "/api/billing",
+      "description": "via the gateway"
+    }
+  ],
   "paths": {
-    "/cards": {
-      "get": {
-        "operationId": "cards_cards_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/CardOut"
-                  },
-                  "title": "Response Cards Cards Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Cards",
-        "tags": [
-          "billing"
-        ]
-      }
-    },
-    "/cards/{card_id}": {
-      "delete": {
-        "operationId": "remove_card_cards__card_id__delete",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "card_id",
-            "required": true,
-            "schema": {
-              "title": "Card Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Remove Card",
-        "tags": [
-          "billing"
-        ]
-      }
-    },
-    "/health": {
-      "get": {
-        "operationId": "health_health_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Health",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
     "/payments": {
       "post": {
-        "operationId": "start_payment_payments_post",
+        "tags": [
+          "billing"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -355,137 +27,23 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Start Payment",
-        "tags": [
-          "billing"
-        ]
-      }
-    },
-    "/payments/{payment_id}": {
-      "get": {
-        "operationId": "get_payment_payments__payment_id__get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "payment_id",
-            "required": true,
-            "schema": {
-              "title": "Payment Id",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
           "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
+            "description": "OK"
           }
-        },
-        "summary": "Get Payment",
-        "tags": [
-          "billing"
-        ]
+        }
       }
     },
-    "/payments/{payment_id}/mock-3ds": {
+    "/payments/{id}/mock-card": {
       "post": {
-        "operationId": "mock_3ds_payments__payment_id__mock_3ds_post",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "payment_id",
-            "required": true,
-            "schema": {
-              "title": "Payment Id",
-              "type": "string"
-            }
-          }
+        "tags": [
+          "billing"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OtpIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Mock 3Ds",
-        "tags": [
-          "billing"
-        ]
-      }
-    },
-    "/payments/{payment_id}/mock-card": {
-      "post": {
-        "operationId": "mock_card_payments__payment_id__mock_card_post",
         "parameters": [
           {
+            "name": "id",
             "in": "path",
-            "name": "payment_id",
             "required": true,
             "schema": {
-              "title": "Payment Id",
               "type": "string"
             }
           }
@@ -502,81 +60,306 @@
         },
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaymentOut"
                 }
               }
-            },
-            "description": "Successful Response"
+            }
+          }
+        }
+      }
+    },
+    "/payments/{id}/mock-3ds": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OtpIn"
+              }
+            }
           },
-          "422": {
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/PaymentOut"
                 }
               }
-            },
-            "description": "Validation Error"
+            }
           }
-        },
-        "summary": "Mock Card",
-        "tags": [
-          "billing"
-        ]
+        }
       }
     },
-    "/ready": {
+    "/payments/{id}": {
       "get": {
-        "operationId": "ready_ready_get",
+        "tags": [
+          "billing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentOut"
+                }
               }
-            },
-            "description": "Successful Response"
+            }
           }
-        },
-        "summary": "Ready",
-        "tags": [
-          "ops"
-        ]
+        }
       }
     },
     "/receipts": {
       "get": {
-        "operationId": "receipts_receipts_get",
+        "tags": [
+          "billing"
+        ],
         "responses": {
           "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/PaymentOut"
-                  },
-                  "title": "Response Receipts Receipts Get",
-                  "type": "array"
+                  }
                 }
               }
-            },
-            "description": "Successful Response"
+            }
           }
-        },
-        "summary": "Receipts",
+        }
+      }
+    },
+    "/cards": {
+      "get": {
         "tags": [
           "billing"
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cards/{id}": {
+      "delete": {
+        "tags": [
+          "billing"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     }
   },
-  "servers": [
+  "components": {
+    "schemas": {
+      "CardIn": {
+        "required": [
+          "number",
+          "expiry",
+          "cvv",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string"
+          },
+          "expiry": {
+            "type": "string"
+          },
+          "cvv": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "save": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "CardOut": {
+        "required": [
+          "id",
+          "brand",
+          "last4",
+          "expiry"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "last4": {
+            "type": "string"
+          },
+          "expiry": {
+            "type": "string"
+          }
+        }
+      },
+      "OtpIn": {
+        "required": [
+          "otp"
+        ],
+        "type": "object",
+        "properties": {
+          "otp": {
+            "type": "string"
+          }
+        }
+      },
+      "PayIn": {
+        "required": [
+          "purchase_id",
+          "method",
+          "saved_card_id"
+        ],
+        "type": "object",
+        "properties": {
+          "purchase_id": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "saved_card_id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PaymentOut": {
+        "required": [
+          "id",
+          "purchase_id",
+          "status",
+          "amount_cents",
+          "description",
+          "card_form_url",
+          "three_ds_url",
+          "brand",
+          "last4",
+          "decline_reason"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "purchase_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "card_form_url": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "three_ds_url": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "brand": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "last4": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "decline_reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "tags": [
     {
-      "description": "via the gateway",
-      "url": "/api/billing"
+      "name": "billing"
     }
   ]
 }

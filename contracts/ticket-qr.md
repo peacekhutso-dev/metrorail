@@ -4,11 +4,11 @@ Reference implementations — keep these three in sync:
 
 | Where | File |
 |---|---|
-| Server (issue + validate) | `services/ticketing/metrorail_ticketing/crypto.py` |
+| Server (issue + validate) | `services/Ticketing/TicketCrypto.cs` (C#) |
 | Customer app (build QR) | `apps/customer/src/ticket/qr.ts` |
-| Scanner app (validate offline) | `apps/scanner/` *(to build — port `read_qr`)* |
+| Scanner app (validate offline) | `apps/scanner/` *(to build — port `ReadQr`)* |
 
-Interop check: `uv run python tools/e2e/qr_interop.py` (TypeScript QR → Python validator).
+Interop check: `dotnet run --project tools/MetroRail.Tools -- qr-interop` (TypeScript QR → C# validator), also run in CI.
 
 ## 1. Ticket certificate — issued by the server after payment
 
@@ -18,7 +18,7 @@ payload = {"v":1, "tid":"MR-48213", "uid":"USR-…", "prd":"ten_trip", "from":"S
            "to":"ST-CLAREMONT", "line":"LN-SOUTHERN", "trips":10, "vf":<unix>, "vt":<unix>,
            "dpk":"<phone P-256 public key, SPKI DER, b64u>"}
 ```
-JSON is canonical: keys sorted, no spaces (`separators=(",",":")`), ASCII.
+JSON is canonical: keys sorted (ordinal), no spaces, ASCII.
 `trips: null` = unlimited (weekly/monthly). A top-up re-issues the certificate; older ones are refused (`replaced_ticket`).
 
 ## 2. QR content — built by the phone every 30 s

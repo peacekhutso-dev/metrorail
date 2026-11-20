@@ -1,167 +1,177 @@
 {
+  "openapi": "3.1.1",
+  "info": {
+    "title": "MetroRail.Tools | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/tracking",
+      "description": "via the gateway"
+    }
+  ],
+  "paths": {
+    "/positions": {
+      "post": {
+        "tags": [
+          "tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PositionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains/{trainNo}": {
+      "get": {
+        "tags": [
+          "tracking"
+        ],
+        "parameters": [
+          {
+            "name": "trainNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains": {
+      "get": {
+        "tags": [
+          "tracking"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TrainOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports": {
+      "post": {
+        "tags": [
+          "tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
-          }
-        },
-        "title": "HTTPValidationError",
-        "type": "object"
-      },
       "PositionIn": {
-        "properties": {
-          "at": {
-            "anyOf": [
-              {
-                "format": "date-time",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "At"
-          },
-          "lat": {
-            "maximum": 90.0,
-            "minimum": -90.0,
-            "title": "Lat",
-            "type": "number"
-          },
-          "lng": {
-            "maximum": 180.0,
-            "minimum": -180.0,
-            "title": "Lng",
-            "type": "number"
-          },
-          "source": {
-            "default": "gps",
-            "enum": [
-              "gps",
-              "staff_scan",
-              "crowd",
-              "simulator"
-            ],
-            "title": "Source",
-            "type": "string"
-          },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
-          }
-        },
         "required": [
           "train_no",
           "lat",
-          "lng"
+          "lng",
+          "at",
+          "source"
         ],
-        "title": "PositionIn",
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "train_no": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          },
+          "at": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "source": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
       },
       "ReportIn": {
-        "properties": {
-          "kind": {
-            "enum": [
-              "arrived",
-              "delayed",
-              "crowded",
-              "not_running"
-            ],
-            "title": "Kind",
-            "type": "string"
-          },
-          "station_id": {
-            "title": "Station Id",
-            "type": "string"
-          },
-          "train_no": {
-            "title": "Train No",
-            "type": "string"
-          }
-        },
         "required": [
           "train_no",
           "station_id",
           "kind"
         ],
-        "title": "ReportIn",
-        "type": "object"
-      },
-      "TrainOut": {
+        "type": "object",
         "properties": {
-          "at_station_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "At Station Id"
-          },
-          "delay_min": {
-            "title": "Delay Min",
-            "type": "integer"
-          },
-          "last_station_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Station Id"
-          },
-          "lat": {
-            "title": "Lat",
-            "type": "number"
-          },
-          "lng": {
-            "title": "Lng",
-            "type": "number"
-          },
-          "next_station_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Next Station Id"
-          },
-          "seen_at": {
-            "format": "date-time",
-            "title": "Seen At",
-            "type": "string"
-          },
-          "source": {
-            "title": "Source",
-            "type": "string"
-          },
-          "state": {
-            "title": "State",
-            "type": "string"
-          },
-          "stationary_s": {
-            "title": "Stationary S",
-            "type": "integer"
-          },
           "train_no": {
-            "title": "Train No",
+            "type": "string"
+          },
+          "station_id": {
+            "type": "string"
+          },
+          "kind": {
             "type": "string"
           }
-        },
+        }
+      },
+      "TrainOut": {
         "required": [
           "train_no",
           "lat",
@@ -175,249 +185,62 @@
           "seen_at",
           "source"
         ],
-        "title": "TrainOut",
-        "type": "object"
-      },
-      "ValidationError": {
+        "type": "object",
         "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "title": "Location",
-            "type": "array"
-          },
-          "msg": {
-            "title": "Message",
+          "train_no": {
             "type": "string"
           },
-          "type": {
-            "title": "Error Type",
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          },
+          "state": {
+            "type": "string"
+          },
+          "stationary_s": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last_station_id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "next_station_id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "at_station_id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "delay_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seen_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source": {
             "type": "string"
           }
-        },
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError",
-        "type": "object"
+        }
       }
     }
   },
-  "info": {
-    "title": "MetroRail tracking service",
-    "version": "0.1.0"
-  },
-  "openapi": "3.1.0",
-  "paths": {
-    "/health": {
-      "get": {
-        "operationId": "health_health_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Health",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/positions": {
-      "post": {
-        "description": "Position from a GPS feed, the demo simulator, or a conductor scan (source=staff_scan).",
-        "operationId": "ingest_position_positions_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PositionIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TrainOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Ingest Position",
-        "tags": [
-          "tracking"
-        ]
-      }
-    },
-    "/ready": {
-      "get": {
-        "operationId": "ready_ready_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "Ready",
-        "tags": [
-          "ops"
-        ]
-      }
-    },
-    "/reports": {
-      "post": {
-        "description": "'Train arrived / delayed / crowded' from commuters. Used as a weak signal + for ML labels.",
-        "operationId": "crowd_report_reports_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReportIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Crowd Report",
-        "tags": [
-          "tracking"
-        ]
-      }
-    },
-    "/trains": {
-      "get": {
-        "operationId": "list_trains_trains_get",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/TrainOut"
-                  },
-                  "title": "Response List Trains Trains Get",
-                  "type": "array"
-                }
-              }
-            },
-            "description": "Successful Response"
-          }
-        },
-        "summary": "List Trains",
-        "tags": [
-          "tracking"
-        ]
-      }
-    },
-    "/trains/{train_no}": {
-      "get": {
-        "operationId": "get_train_trains__train_no__get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "train_no",
-            "required": true,
-            "schema": {
-              "title": "Train No",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TrainOut"
-                }
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            },
-            "description": "Validation Error"
-          }
-        },
-        "summary": "Get Train",
-        "tags": [
-          "tracking"
-        ]
-      }
-    }
-  },
-  "servers": [
+  "tags": [
     {
-      "description": "via the gateway",
-      "url": "/api/tracking"
+      "name": "tracking"
     }
   ]
 }
