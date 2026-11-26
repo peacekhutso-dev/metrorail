@@ -1,54 +1,89 @@
+
 using System.Text.Json;
-using MetroRail.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace MetroRail.Network;
 
-/// <summary>Loads the demo network (Southern line) on first start if the DB is empty.
-/// Station order is real; coordinates approximate; times are a sample timetable, not PRASA data.</summary>
+/// <summary>
+/// Seeds the physical railway network.
+/// Timetables are managed separately by TimetableImporter.
+/// </summary>
 public static class Seed
 {
+    /// <summary>
+    /// Loads the embedded railway network definition.
+    /// </summary>
     public static JsonElement Load()
     {
-        using var s = typeof(Seed).Assembly.GetManifestResourceStream("southern_line.json")!;
-        return JsonDocument.Parse(s).RootElement.Clone();
+        using var stream = typeof(Seed)
+            .Assembly
+            .GetManifestResourceStream("southern_line.json")
+            ?? throw new FileNotFoundException(
+                "Southern Line network resource not found.");
+
+        using var document = JsonDocument.Parse(stream);
+
+        return document.RootElement.Clone();
     }
 
-    public static async Task<bool> SeedIfEmptyAsync(NetworkDb db)
+    /// <summary>
+    /// Creates the physical railway network on first startup.
+    /// Does not generate synthetic train services.
+    /// </summary>
+    public static async Task<bool> SeedIfEmptyAsync(
+        NetworkDb db)
     {
-        if (await db.Stations.AnyAsync()) return false;
+        // Do not overwrite an existing railway network.
+        if (await db.Stations.AnyAsync())
+            return false;
+
         var data = Load();
-        foreach (var st in data.GetProperty("stations").EnumerateArray())
+
+        // Create physical railway stations.
+        foreach (var station in
+                 data.GetProperty("stations").EnumerateArray())
+        {
             db.Stations.Add(new Station
             {
-                Id = st.GetProperty("id").GetString()!, Name = st.GetProperty("name").GetString()!,
-                Lat = st.GetProperty("lat").GetDouble(), Lng = st.GetProperty("lng").GetDouble(),
+                Id = station.GetProperty("id").GetString()!,
+                Name = station.GetProperty("name").GetString()!,
+                Lat = station.GetProperty("lat").GetDouble(),
+                Lng = station.GetProperty("lng").GetDouble()
             });
-        var platforms = new Dictionary<string, string>();
-        foreach (var ln in data.GetProperty("lines").EnumerateArray())
+        }
+
+        // Create railway lines and station sequences.
+        foreach (var line in
+                 data.GetProperty("lines").EnumerateArray())
         {
-            var id = ln.GetProperty("id").GetString()!;
-            db.Lines.Add(new Line { Id = id, Name = ln.GetProperty("name").GetString()!, Colour = ln.GetProperty("colour").GetString()! });
-            foreach (var stop in ln.GetProperty("stops").EnumerateArray())
+            var lineId = line.GetProperty("id").GetString()!;
+
+            db.Lines.Add(new Line
+            {
+                Id = lineId,
+                Name = line.GetProperty("name").GetString()!,
+                Colour = line.GetProperty("colour").GetString()!
+            });
+
+            foreach (var stop in
+                     line.GetProperty("stops").EnumerateArray())
+            {
                 db.LineStops.Add(new LineStop
                 {
-                    LineId = id, Seq = stop.GetProperty("seq").GetInt32(),
-                    StationId = stop.GetProperty("station_id").GetString()!,
-                    MinutesFromPrevious = stop.GetProperty("minutes_from_previous").GetInt32(),
+                    LineId = lineId,
+                    Seq = stop.GetProperty("seq").GetInt32(),
+                    StationId = stop.GetProperty("station_id")
+                        .GetString()!,
+                    MinutesFromPrevious = stop
+                        .GetProperty("minutes_from_previous")
+                        .GetInt32()
                 });
-            foreach (var p in ln.GetProperty("platforms").EnumerateObject()) platforms[p.Name] = p.Value.GetString()!;
+            }
         }
-        var tt = data.GetProperty("timetable");
-        var lineId = tt.GetProperty("line_id").GetString()!;
-        foreach (var direction in new[] { "southbound", "northbound" })
-        {
-            var d = tt.GetProperty(direction);
-            int t = Clock.ParseHhmm(d.GetProperty("first").GetString()!), last = Clock.ParseHhmm(d.GetProperty("last").GetString()!);
-            int n = d.GetProperty("number_start").GetInt32(), step = d.GetProperty("number_step").GetInt32(), every = d.GetProperty("every_min").GetInt32();
-            for (; t <= last; t += every, n += step)
-                db.ScheduledTrips.Add(new ScheduledTrip { TrainNo = n.ToString(), LineId = lineId, Direction = direction, DepartsMin = t, Platform = platforms[direction] });
-        }
+
+        // Persist the physical railway network.
         await db.SaveChangesAsync();
+
         return true;
     }
 }

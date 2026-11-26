@@ -250,6 +250,7 @@
           "direction",
           "terminus",
           "platform",
+          "source_station_label",
           "scheduled",
           "scheduled_min",
           "in_min"
@@ -269,6 +270,9 @@
             "type": "string"
           },
           "platform": {
+            "type": "string"
+          },
+          "source_station_label": {
             "type": "string"
           },
           "scheduled": {
@@ -410,6 +414,7 @@
           "seq",
           "station_id",
           "station_name",
+          "source_station_label",
           "scheduled"
         ],
         "type": "object",
@@ -422,6 +427,9 @@
             "type": "string"
           },
           "station_name": {
+            "type": "string"
+          },
+          "source_station_label": {
             "type": "string"
           },
           "scheduled": {
