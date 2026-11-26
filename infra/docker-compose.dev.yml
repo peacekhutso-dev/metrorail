@@ -1,0 +1,18 @@
+# Local development overrides.
+# Restrict infrastructure access to the local machine.
+
+services:
+  postgres:
+    ports: !override
+      - "127.0.0.1:5433:5432"
+
+  nats:
+    # NATS remains accessible through Docker's internal network.
+    # No host port publication is required.
+    ports: !reset []
+
+  network:
+    ports:
+      - "127.0.0.1:8101:8000"
+    environment:
+      ALLOW_DEV_TOKENS: "false"

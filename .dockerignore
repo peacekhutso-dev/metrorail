@@ -1,0 +1,27 @@
+# Git metadata
+.git
+
+# Compiled .NET artifacts
+**/bin
+**/obj
+
+# Frontend dependencies and builds
+**/node_modules
+**/dist
+
+# IDE configuration
+**/.vs
+**/.idea
+**/.vscode
+
+# Test results
+**/TestResults
+**/coverage
+
+# Local environment secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local logs
+**/*.log
