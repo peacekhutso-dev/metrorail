@@ -164,6 +164,38 @@
         }
       }
     },
+    "/lines/{lineId}/trips": {
+      "get": {
+        "tags": [
+          "network"
+        ],
+        "parameters": [
+          {
+            "name": "lineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimetableTripOut"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/stations/{stationId}/departures": {
       "get": {
         "tags": [
@@ -434,6 +466,87 @@
           },
           "scheduled": {
             "type": "string"
+          }
+        }
+      },
+      "TimetableStopOut": {
+        "required": [
+          "seq",
+          "station_id",
+          "station_name",
+          "source_station_label",
+          "scheduled_min",
+          "scheduled",
+          "lat",
+          "lng"
+        ],
+        "type": "object",
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "station_id": {
+            "type": "string"
+          },
+          "station_name": {
+            "type": "string"
+          },
+          "source_station_label": {
+            "type": "string"
+          },
+          "scheduled_min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scheduled": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "TimetableTripOut": {
+        "required": [
+          "train_no",
+          "line_id",
+          "direction",
+          "terminus",
+          "platform",
+          "service_days",
+          "stops"
+        ],
+        "type": "object",
+        "properties": {
+          "train_no": {
+            "type": "string"
+          },
+          "line_id": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "terminus": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "service_days": {
+            "type": "string"
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimetableStopOut"
+            }
           }
         }
       },

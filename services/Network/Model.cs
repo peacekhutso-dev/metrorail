@@ -223,3 +223,36 @@ public sealed record JourneyOption(
     string Platform,
     int Changes = 0
 );
+
+// ========================================================
+// TIMETABLE DISCOVERY RESPONSE MODELS
+// ========================================================
+
+/// <summary>
+/// A scheduled station event with geographical coordinates.
+/// Used by timetable consumers such as the train simulator.
+/// </summary>
+public sealed record TimetableStopOut(
+    int Seq,
+    string StationId,
+    string StationName,
+    string SourceStationLabel,
+    int ScheduledMin,
+    string Scheduled,
+    double Lat,
+    double Lng
+);
+
+/// <summary>
+/// Complete scheduled train service, including its
+/// operating calendar and ordered station events.
+/// </summary>
+public sealed record TimetableTripOut(
+    string TrainNo,
+    string LineId,
+    string Direction,
+    string Terminus,
+    string Platform,
+    string ServiceDays,
+    IReadOnlyList<TimetableStopOut> Stops
+);

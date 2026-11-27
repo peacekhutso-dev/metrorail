@@ -21,4 +21,7 @@
     <ProjectReference Include="../../services/Billing/MetroRail.Billing.csproj" />
     <ProjectReference Include="../../services/Realtime/MetroRail.Realtime.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tools\MetroRail.Tools\MetroRail.Tools.csproj" />
+  </ItemGroup>
 </Project>

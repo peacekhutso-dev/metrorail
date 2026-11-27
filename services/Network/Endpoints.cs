@@ -160,6 +160,95 @@ public static class Endpoints
         });
 
         // ------------------------------------------------------------
+        // GET /lines/{lineId}/trips
+        //
+        // Returns the complete scheduled timetable for a railway line.
+        //
+        // Includes operating calendars, actual scheduled events,
+        // original timetable labels and station coordinates.
+        //
+        // The catalogue is independent of the current clock.
+        // Consumers determine which services operate at a given time.
+        // ------------------------------------------------------------
+        g.MapGet("/lines/{lineId}/trips", async (
+            string lineId,
+            NetworkDb db,
+            CancellationToken cancellationToken) =>
+        {
+            // Verify that the requested railway line exists.
+            var lineExists = await db.Lines
+                .AsNoTracking()
+                .AnyAsync(
+                    line => line.Id == lineId,
+                    cancellationToken);
+
+            if (!lineExists)
+            {
+                throw new NotFoundException(
+                    $"Line {lineId} not found",
+                    "line_not_found");
+            }
+
+            // Load scheduled trains and their actual station events.
+            // AsNoTracking avoids unnecessary EF Core change tracking
+            // because this endpoint performs read-only operations.
+            var trips = await db.ScheduledTrips
+                .AsNoTracking()
+                .Where(t => t.LineId == lineId)
+                .Include(t => t.Stops)
+                    .ThenInclude(s => s.Station)
+                .OrderBy(t => t.TrainNo)
+                .ToListAsync(cancellationToken);
+
+            var timetable = new List<TimetableTripOut>();
+
+            foreach (var trip in trips)
+            {
+                var stops = trip.Stops
+                    .OrderBy(s => s.Seq)
+                    .ToList();
+
+                // Fail explicitly rather than silently publishing
+                // an incomplete train timetable.
+                if (stops.Count < 2 ||
+                    stops.Select(s => s.StationId)
+                        .Distinct().Count() < 2)
+                {
+                    throw new InvalidOperationException(
+                        $"Train {trip.TrainNo} has an invalid timetable.");
+                }
+
+                // Preserve the actual terminating station.
+                var terminus = stops[^1].Station.Name;
+
+                var scheduledEvents = stops
+                    .Select(s => new TimetableStopOut(
+                        s.Seq,
+                        s.StationId,
+                        s.Station.Name,
+                        s.SourceStationLabel,
+                        s.ScheduledMin,
+                        Clock.Hhmm(s.ScheduledMin),
+                        s.Station.Lat,
+                        s.Station.Lng
+                    ))
+                    .ToList();
+
+                timetable.Add(new TimetableTripOut(
+                    trip.TrainNo,
+                    trip.LineId,
+                    trip.Direction,
+                    terminus,
+                    trip.Platform,
+                    trip.ServiceDays,
+                    scheduledEvents
+                ));
+            }
+
+            return timetable;
+        });
+
+        // ------------------------------------------------------------
         // GET /stations/{stationId}/departures
         //
         // Returns trains that actually call at this station.
